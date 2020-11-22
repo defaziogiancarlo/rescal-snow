@@ -8,6 +8,7 @@ More information is provided in the datarun tutorial in docs."""
 
 import datarun
 import os
+import random
 
 parameters_par_1 = {
     'Model':  'SNO',
@@ -19,7 +20,7 @@ parameters_par_1 = {
     'Time': 0.0,
     'H': 80,
     'L': 400,
-    'D': 200,
+    'D': 224,
     'Centering_delay': 0,
     'Phys_prop_file': 'real_data/sealevel_snow.prop', # need to use rescal home
     'Qsat_file': 'real_data/PDF.data', # need to use rescal home
@@ -50,7 +51,7 @@ parameters_par_1 = {
 # command line arguments for rescal which will be in the .run file
 parameters_run_1 = {
     'stop after' : '200_t0',
-    'output interval' : '50_t0',
+    'output interval' : '100_t0',
     'png interval' : False,
     'quit' : True,
     'random seed' : 6,
@@ -74,13 +75,16 @@ if __name__ == '__main__':
     	pmi_rank = os.environ['PMI_RANK']
     else:
         print("Warning: process identifier PMI_RANK not found. If this run is parallel, collisions may occur.")
-        pmi_rank = 0
+        random.seed()
+        pmi_rank = random.randint(0,100000)
         # safe to make sure data_runs directory exists
         rescal_root = os.environ['RESCAL_SNOW_ROOT']
         data_runs_dir = os.path.join(rescal_root, 'data_runs')
         if not os.path.isdir(data_runs_dir):
             os.mkdir(data_runs_dir)
-        
+
+
+
     parameters_1['random seed'] = int(pmi_rank) + 1234
     output_dir = 'exp' + str(pmi_rank)
     
